@@ -1,0 +1,164 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    },
+    "_meta": {
+      "title": "Load SDXL"
+    }
+  },
+  "2": {
+    "class_type": "CLIPVisionLoader",
+    "inputs": {
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+    },
+    "_meta": {
+      "title": "Load CLIP Vision"
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterModelLoader",
+    "inputs": {
+      "ipadapter_file": "ip-adapter-plus_sdxl_vit-h.safetensors"
+    },
+    "_meta": {
+      "title": "Load IPAdapter Plus SDXL"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ladybird_ref/ref_01.jpg"
+    },
+    "_meta": {
+      "title": "Style Reference Image"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapterPreciseStyleTransfer",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "ipadapter": [
+        "3",
+        0
+      ],
+      "image": [
+        "4",
+        0
+      ],
+      "clip_vision": [
+        "2",
+        0
+      ],
+      "weight": 0.8,
+      "style_boost": 1.0,
+      "combine_embeds": "average",
+      "start_at": 0.0,
+      "end_at": 1.0,
+      "embeds_scaling": "V only"
+    },
+    "_meta": {
+      "title": "IPAdapter Style Transfer"
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "POSITIVE_PROMPT",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "CLIP Text Encode (Positive)"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "NEGATIVE_PROMPT",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "CLIP Text Encode (Negative)"
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1
+    },
+    "_meta": {
+      "title": "Empty Latent (Landscape)"
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "5",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "8",
+        0
+      ],
+      "seed": 0,
+      "steps": 30,
+      "cfg": 6.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "9",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    },
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "10",
+        0
+      ],
+      "filename_prefix": "pictor_ipa"
+    },
+    "_meta": {
+      "title": "Save Image"
+    }
+  }
+}

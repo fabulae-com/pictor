@@ -28,7 +28,8 @@ class ComfyClient:
         payload = {"prompt": workflow, "client_id": self.client_id}
         with httpx.Client(timeout=30, verify=False) as http:
             r = http.post(f"{self.base_url}/prompt", json=payload)
-            r.raise_for_status()
+            if r.status_code != 200:
+                raise RuntimeError(f"ComfyUI error {r.status_code}: {r.text[:2000]}")
             return r.json()["prompt_id"]
 
     def poll_result(self, prompt_id: str, poll_interval: float = 1.0) -> dict:
