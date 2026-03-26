@@ -1,0 +1,24 @@
+[project]
+name = "pictor"
+version = "0.1.0"
+description = "The painter — illustration generation for fabulae.com"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "websockets>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+pictor = "pictor.cli:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

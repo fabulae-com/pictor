@@ -1,0 +1,7 @@
+# Ignore generated images
+*.png
+*.jpg
+*.jpeg
+*.webp
+!.gitkeep
+!.gitignore
